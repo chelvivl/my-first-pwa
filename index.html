@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Моё первое PWA</title>
+
+  <!-- Иконка для iOS -->
+  <link rel="apple-touch-icon" href="icon-192.png">
+
+  <!-- Мета для standalone-режима на iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <!-- Манифест для PWA -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Тема для Android/других -->
+  <meta name="theme-color" content="#4a90e2">
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #6e8efb, #a777e3);
+      color: white;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <h1>👋 Привет, мир!</h1>
+    <p>Это моя первая PWA. Я установил её как приложение!</p>
+  </div>
+
+  <script>
+    // Регистрируем Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('✅ SW зарегистрирован:', reg))
+          .catch(err => console.log('❌ Ошибка регистрации SW:', err));
+      });
+    }
+  </script>
+</body>
+</html>
