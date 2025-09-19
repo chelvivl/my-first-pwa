@@ -3,54 +3,220 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Моё первое PWA</title>
-
-  <!-- Иконка для iOS -->
-  <link rel="apple-touch-icon" href="icon-192.png">
-
-  <!-- Мета для standalone-режима на iOS -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-  <!-- Манифест для PWA -->
+  <title>Библия за 111 дней</title>
   <link rel="manifest" href="manifest.json">
-
-  <!-- Тема для Android/других -->
-  <meta name="theme-color" content="#4a90e2">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#2c3e50">
 
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background: linear-gradient(135deg, #6e8efb, #a777e3);
+      background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
-      text-align: center;
+      padding: 20px;
+      margin: 0;
     }
     h1 {
-      font-size: 2.5rem;
-      margin: 0;
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 1.8rem;
+    }
+    .day {
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .day-text {
+      flex: 1;
+      font-size: 1.1rem;
+    }
+    .check {
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+    }
+    .completed .day-text {
+      text-decoration: line-through;
+      opacity: 0.7;
+    }
+    .stats {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 1.2rem;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <div>
-    <h1>👋 Привет, мир!</h1>
-    <p>Это моя первая PWA. Я установил её как приложение! Здесь я хочу сделать план чтения Библии на 111 дней. Верю что у меня все получится.</p>
+  <h1>📖 Библия за 111 дней</h1>
+  <div class="stats" id="stats">Прогресс: 0 из 111</div>
+  <div id="list">
+    <!-- Список дней будет сгенерирован здесь -->
   </div>
 
   <script>
-    // Регистрируем Service Worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(reg => console.log('✅ SW зарегистрирован:', reg))
-          .catch(err => console.log('❌ Ошибка регистрации SW:', err));
-      });
+    // План чтения — можно редактировать
+    const plan = [
+      "Бытие 1–3",
+      "Бытие 4–6",
+      "Бытие 7–9",
+      "Бытие 10–12",
+      "Бытие 13–15",
+      "Бытие 16–18",
+      "Бытие 19–21",
+      "Бытие 22–24",
+      "Бытие 25–27",
+      "Бытие 28–30",
+      "Бытие 31–33",
+      "Бытие 34–36",
+      "Бытие 37–39",
+      "Бытие 40–42",
+      "Бытие 43–45",
+      "Бытие 46–48",
+      "Бытие 49–50, Исход 1",
+      "Исход 2–4",
+      "Исход 5–7",
+      "Исход 8–10",
+      "Исход 11–13",
+      "Исход 14–16",
+      "Исход 17–19",
+      "Исход 20–22",
+      "Исход 23–25",
+      "Исход 26–28",
+      "Исход 29–31",
+      "Исход 32–34",
+      "Исход 35–37",
+      "Исход 38–40",
+      "Левит 1–3",
+      "Левит 4–6",
+      "Левит 7–9",
+      "Левит 10–12",
+      "Левит 13–14",
+      "Левит 15–17",
+      "Левит 18–20",
+      "Левит 21–23",
+      "Левит 24–26",
+      "Левит 27, Числа 1–2",
+      "Числа 3–4",
+      "Числа 5–6",
+      "Числа 7–8",
+      "Числа 9–10",
+      "Числа 11–12",
+      "Числа 13–14",
+      "Числа 15–16",
+      "Числа 17–18",
+      "Числа 19–20",
+      "Числа 21–22",
+      "Числа 23–24",
+      "Числа 25–26",
+      "Числа 27–28",
+      "Числа 29–30",
+      "Числа 31–32",
+      "Числа 33–34",
+      "Числа 35–36, Второзаконие 1",
+      "Второзаконие 2–3",
+      "Второзаконие 4–5",
+      "Второзаконие 6–7",
+      "Второзаконие 8–10",
+      "Второзаконие 11–13",
+      "Второзаконие 14–16",
+      "Второзаконие 17–19",
+      "Второзаконие 20–22",
+      "Второзаконие 23–25",
+      "Второзаконие 26–28",
+      "Второзаконие 29–31",
+      "Второзаконие 32–34, Иисус Навин 1–2",
+      "Иисус Навин 3–5",
+      "Иисус Навин 6–8",
+      "Иисус Навин 9–10",
+      "Иисус Навин 11–13",
+      "Иисус Навин 14–16",
+      "Иисус Навин 17–19",
+      "Иисус Навин 20–22",
+      "Иисус Навин 23–24, Судей 1–2",
+      "Судей 3–5",
+      "Судей 6–8",
+      "Судей 9–10",
+      "Судей 11–12",
+      "Судей 13–15",
+      "Судей 16–18",
+      "Судей 19–21",
+      "Руфь 1–4, 1 Царств 1–2",
+      "1 Царств 3–5",
+      "1 Царств 6–8",
+      "1 Царств 9–11",
+      "1 Царств 12–14",
+      "1 Царств 15–16",
+      "1 Царств 17–18",
+      "1 Царств 19–20",
+      "1 Царств 21–22",
+      "1 Царств 23–24",
+      "1 Царств 25–26",
+      "1 Царств 27–28",
+      "1 Царств 29–31, 2 Царств 1–2",
+      "2 Царств 3–4",
+      "2 Царств 5–6",
+      "2 Царств 7–8",
+      "2 Царств 9–10",
+      "2 Царств 11–12",
+      "2 Царств 13–14",
+      "2 Царств 15–16",
+      "2 Царств 17–18",
+      "2 Царств 19–20",
+      "2 Царств 21–22",
+      "2 Царств 23–24"
+    ];
+
+    const listEl = document.getElementById('list');
+    const statsEl = document.getElementById('stats');
+    const STORAGE_KEY = 'bible-plan-v1';
+
+    // Загружаем состояние из localStorage
+    let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || plan.map(() => false);
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      updateStats();
     }
+
+    function updateStats() {
+      const completed = state.filter(Boolean).length;
+      statsEl.textContent = `Прогресс: ${completed} из ${plan.length}`;
+    }
+
+    function render() {
+      listEl.innerHTML = '';
+      plan.forEach((item, index) => {
+        const dayEl = document.createElement('div');
+        dayEl.className = `day ${state[index] ? 'completed' : ''}`;
+
+        const textEl = document.createElement('div');
+        textEl.className = 'day-text';
+        textEl.textContent = `День ${index + 1}: ${item}`;
+
+        const checkEl = document.createElement('input');
+        checkEl.type = 'checkbox';
+        checkEl.className = 'check';
+        checkEl.checked = state[index];
+        checkEl.addEventListener('change', () => {
+          state[index] = checkEl.checked;
+          dayEl.className = `day ${state[index] ? 'completed' : ''}`;
+          saveState();
+        });
+
+        dayEl.appendChild(textEl);
+        dayEl.appendChild(checkEl);
+        listEl.appendChild(dayEl);
+      });
+      updateStats();
+    }
+
+    render();
   </script>
 </body>
 </html>
