@@ -1,314 +1,316 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Библия за 111 дней</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#667eea">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Библия за 111 дней</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#667eea">
 
-  <style>
-    html {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      background-attachment: fixed;
-      background-size: cover;
-      height: 100%;
-    }
+    <style>
+        html {
+          background: linear-gradient(135deg, #667eea, #764ba2);
+          background-attachment: fixed;
+          background-size: cover;
+          height: 100%;
+        }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      background: transparent;
-      color: white;
-      padding: env(safe-area-inset-top) 20px 20px 20px;
-      margin: 0;
-      position: relative;
-      min-height: 100svh;
-      overscroll-behavior-y: none;
-    }
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+          background: transparent;
+          color: white;
+          padding: env(safe-area-inset-top) 20px 20px 20px;
+          margin: 0;
+          position: relative;
+          min-height: 100svh;
+          overscroll-behavior-y: none;
+        }
 
-    h1 {
-      text-align: center;
-      margin: 40px 0 20px;
-      font-size: 1.8rem;
-    }
+        h1 {
+          text-align: center;
+          margin: 40px 0 20px;
+          font-size: 1.8rem;
+        }
 
-    .menu-button {
-      position: absolute;
-      top: calc(env(safe-area-inset-top) - 10px);
-      right: 15px;
-      background: rgba(255,255,255,0.2);
-      border: none;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      font-size: 28px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      transition: background 0.2s;
-    }
-    .menu-button:hover {
-      background: rgba(255,255,255,0.3);
-    }
+        .menu-button {
+          position: absolute;
+          top: calc(env(safe-area-inset-top) - 10px);
+          right: 15px;
+          background: rgba(255,255,255,0.2);
+          border: none;
+          width: 44px;
+          height: 44px;
+          border-radius: 50%;
+          font-size: 28px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 10;
+          transition: background 0.2s;
+        }
+        .menu-button:hover {
+          background: rgba(255,255,255,0.3);
+        }
 
-    .day {
-      background: rgba(255,255,255,0.1);
-      padding: 15px;
-      border-radius: 12px;
-      margin-bottom: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: background 0.2s;
-      cursor: pointer;
-    }
+        .day {
+          background: rgba(255,255,255,0.1);
+          padding: 15px;
+          border-radius: 12px;
+          margin-bottom: 15px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          transition: background 0.2s;
+          cursor: pointer;
+        }
 
-    .day.completed {
-      background: rgba(0, 0, 0, 0.3);
-    }
+        .day.completed {
+          background: rgba(0, 0, 0, 0.3);
+        }
 
-    .day.overdue {
-      background: rgba(255, 80, 80, 0.2);
-      border-left: 4px solid #ff5050;
-    }
+        .day.overdue {
+          background: rgba(255, 80, 80, 0.2);
+          border-left: 4px solid #ff5050;
+        }
 
-    .day-text {
-      flex: 1;
-      font-size: 1.1rem;
-    }
-    .check {
-      width: 24px;
-      height: 24px;
-      cursor: pointer;
-    }
+        .day-text {
+          flex: 1;
+          font-size: 1.1rem;
+        }
+        .check {
+          width: 24px;
+          height: 24px;
+          cursor: pointer;
+        }
 
-    .completed .day-text {
-      text-decoration: line-through;
-      color: rgba(255, 255, 255, 0.6);
-    }
+        .completed .day-text {
+          text-decoration: line-through;
+          color: rgba(255, 255, 255, 0.6);
+        }
 
-    .stats {
-      text-align: center;
-      margin: 20px 0;
-      font-size: 1.2rem;
-      font-weight: bold;
-    }
+        .stats {
+          text-align: center;
+          margin: 20px 0;
+          font-size: 1.2rem;
+          font-weight: bold;
+        }
 
-    .month-header {
-      background: rgba(255,255,255,0.15);
-      padding: 12px 15px;
-      border-radius: 10px;
-      margin: 30px 0 15px;
-      font-weight: bold;
-      font-size: 1.3rem;
-      text-align: center;
-      text-transform: capitalize;
-    }
+        .month-header {
+          background: rgba(255,255,255,0.15);
+          padding: 12px 15px;
+          border-radius: 10px;
+          margin: 30px 0 15px;
+          font-weight: bold;
+          font-size: 1.3rem;
+          text-align: center;
+          text-transform: capitalize;
+        }
 
-    .menu {
-      position: absolute;
-      top: calc(env(safe-area-inset-top) + 50px);
-      right: 15px;
-      background: rgba(255,255,255,0.95);
-      color: #2c3e50;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-      padding: 10px 0;
-      min-width: 200px;
-      z-index: 100;
-      display: none;
-      animation: slideDown 0.2s ease-out;
-    }
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .menu-item {
-      padding: 14px 20px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .menu-item:hover {
-      background: rgba(0,0,0,0.05);
-    }
+        .menu {
+          position: absolute;
+          top: calc(env(safe-area-inset-top) + 50px);
+          right: 15px;
+          background: rgba(255,255,255,0.95);
+          color: #2c3e50;
+          border-radius: 12px;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+          padding: 10px 0;
+          min-width: 200px;
+          z-index: 100;
+          display: none;
+          animation: slideDown 0.2s ease-out;
+        }
+        @keyframes slideDown {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .menu-item {
+          padding: 14px 20px;
+          cursor: pointer;
+          font-weight: bold;
+          transition: background 0.2s;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        .menu-item:hover {
+          background: rgba(0,0,0,0.05);
+        }
 
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s;
-    }
-    .modal-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
-    .modal {
-      background: white;
-      color: #2c3e50;
-      padding: 30px;
-      border-radius: 16px;
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      transform: scale(0.95);
-      transition: transform 0.3s;
-      box-sizing: border-box;
-      margin: 0 auto;
-    }
-    .modal-overlay.active .modal {
-      transform: scale(1);
-    }
-    .modal h3 {
-      margin: 0 0 20px;
-      font-size: 1.4rem;
-    }
-    .modal input {
-      width: 100%;
-      padding: 12px;
-      margin: 15px 0;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      font-size: 1.2rem;
-      text-align: center;
-      box-sizing: border-box;
-    }
-    .modal-buttons {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      margin-top: 20px;
-    }
-    .modal-btn {
-      padding: 14px 20px;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      flex: 1;
-      font-size: 1.2rem;
-    }
-    .modal-btn.cancel {
-      background: #e0e0e0;
-      color: #555;
-    }
-    .modal-btn.confirm {
-      background: #667eea;
-      color: white;
-    }
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0,0,0,0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+          opacity: 0;
+          visibility: hidden;
+          transition: all 0.3s;
+        }
+        .modal-overlay.active {
+          opacity: 1;
+          visibility: visible;
+        }
+        .modal {
+          background: white;
+          color: #2c3e50;
+          padding: 30px;
+          border-radius: 16px;
+          width: 90%;
+          max-width: 400px;
+          text-align: center;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+          transform: scale(0.95);
+          transition: transform 0.3s;
+          box-sizing: border-box;
+          margin: 0 auto;
+        }
+        .modal-overlay.active .modal {
+          transform: scale(1);
+        }
+        .modal h3 {
+          margin: 0 0 20px;
+          font-size: 1.4rem;
+        }
+        .modal input {
+          width: 100%;
+          padding: 12px;
+          margin: 15px 0;
+          border: 2px solid #e0e0e0;
+          border-radius: 8px;
+          font-size: 1.2rem;
+          text-align: center;
+          box-sizing: border-box;
+        }
+        .modal-buttons {
+          display: flex;
+          gap: 10px;
+          justify-content: center;
+          margin-top: 20px;
+        }
+        .modal-btn {
+          padding: 14px 20px;
+          border: none;
+          border-radius: 8px;
+          font-weight: bold;
+          cursor: pointer;
+          flex: 1;
+          font-size: 1.2rem;
+        }
+        .modal-btn.cancel {
+          background: #e0e0e0;
+          color: #555;
+        }
+        .modal-btn.confirm {
+          background: #667eea;
+          color: white;
+        }
 
-    .toast-notification {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.9);
-      background: rgba(0,0,0,0.85);
-      color: white;
-      padding: 20px 30px;
-      border-radius: 16px;
-      z-index: 1000;
-      font-weight: bold;
-      font-size: 1.1rem;
-      text-align: center;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-      opacity: 0;
-      transition: all 0.3s cubic-bezier(0.2, 1, 0.2, 1);
-      pointer-events: none;
-    }
-    .toast-notification.show {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-    }
+        .toast-notification {
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%) scale(0.9);
+          background: rgba(0,0,0,0.85);
+          color: white;
+          padding: 20px 30px;
+          border-radius: 16px;
+          z-index: 1000;
+          font-weight: bold;
+          font-size: 1.1rem;
+          text-align: center;
+          box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+          opacity: 0;
+          transition: all 0.3s cubic-bezier(0.2, 1, 0.2, 1);
+          pointer-events: none;
+        }
+        .toast-notification.show {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
+        }
 
-    /* 🆕 Кнопка "Текущий день" */
-    #current-day-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: rgba(255,255,255,0.9);
-      color: #667eea;
-      border: none;
-      border-radius: 50%;
-      width: 56px;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      font-weight: bold;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      cursor: pointer;
-      z-index: 99;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-      pointer-events: none;
-    }
-    #current-day-btn.show {
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-    }
-  </style>
+        /* 🆕 Кнопка "Текущий день" */
+        #current-day-btn {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          background: rgba(255,255,255,0.9);
+          color: #667eea;
+          border: none;
+          border-radius: 50%;
+          width: 56px;
+          height: 56px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.2rem;
+          font-weight: bold;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+          cursor: pointer;
+          z-index: 99;
+          opacity: 0;
+          visibility: hidden;
+          transition: all 0.3s ease;
+          pointer-events: none;
+        }
+        #current-day-btn.show {
+          opacity: 1;
+          visibility: visible;
+          pointer-events: auto;
+        }
+    </style>
 </head>
 <body>
-  <button class="menu-button" onclick="toggleMenu()">⋯</button>
+<button class="menu-button" onclick="toggleMenu()">⋯</button>
 
-  <h1>📖 Библия за 111 дней</h1>
+<h1>📖 Библия за 111 дней</h1>
 
-  <div class="stats" id="stats">Прогресс: 0 из 111</div>
+<div class="stats" id="stats">Прогресс: 0 из 111</div>
 
-  <div class="menu" id="menu">
+<div class="menu" id="menu">
     <div class="menu-item" onclick="showContinueModal()">
-      📖 Продолжить с дня...
+        📖 Продолжить с дня...
     </div>
     <div class="menu-item" onclick="resetProgress()">
-      🗑️ Сбросить всё
+        🗑️ Сбросить всё
     </div>
-  </div>
+</div>
 
-  <div id="list">
+<div id="list">
     <!-- Список дней будет сгенерирован здесь -->
-  </div>
+</div>
 
-  <div class="modal-overlay" id="continue-modal">
+<div class="modal-overlay" id="continue-modal">
     <div class="modal">
-      <h3>📖 Продолжить с дня...</h3>
-      <p>Введи номер дня, который ты читаешь <strong>сегодня</strong><br><small>Все предыдущие дни будут отмечены</small></p>
-      <input type="number" id="day-input" min="1" max="111" placeholder="Например: 33">
-      <div class="modal-buttons">
-        <button class="modal-btn cancel" onclick="hideContinueModal()">Отмена</button>
-        <button class="modal-btn confirm" onclick="continueFromDay()">Применить</button>
-      </div>
+        <h3>📖 Продолжить с дня...</h3>
+        <p>Введи номер дня, который ты читаешь <strong>сегодня</strong><br><small>Все предыдущие дни будут
+            отмечены</small></p>
+        <input type="number" id="day-input" min="1" max="111" placeholder="Например: 33">
+        <div class="modal-buttons">
+            <button class="modal-btn cancel" onclick="hideContinueModal()">Отмена</button>
+            <button class="modal-btn confirm" onclick="continueFromDay()">Применить</button>
+        </div>
     </div>
-  </div>
+</div>
 
-  <div class="toast-notification" id="toast-notification">Сообщение</div>
+<div class="toast-notification" id="toast-notification">Сообщение</div>
 
-  <!-- 🆕 Кнопка "Текущий день" — БЕЗ инлайн-стилей! -->
-  <button id="current-day-btn" onclick="scrollToCurrentDay()">
+<!-- 🆕 Кнопка "Текущий день" — БЕЗ инлайн-стилей! -->
+<button id="current-day-btn" onclick="scrollToCurrentDay()">
     ⬇️
-  </button>
+</button>
 
-  <script>
+<script>
 
     const plan = [
       "Бытие 1–11",
@@ -632,9 +634,8 @@
         currentDayBtn.innerHTML = '⬆️'; // Элемент выше — стрелка вверх
       } else {
         currentDayBtn.innerHTML = '⬇️'; // Элемент ниже — стрелка вниз
+         currentDayBtn.classList.add('show');
       }
-
-      currentDayBtn.classList.add('show');
     }
 
     // 🆕 Прокрутка к текущему дню
@@ -650,6 +651,6 @@
     window.addEventListener('scroll', updateCurrentDayButton, { passive: true });
 
     render();
-  </script>
+</script>
 </body>
 </html>
