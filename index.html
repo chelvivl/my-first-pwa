@@ -65,19 +65,18 @@
       justify-content: space-between;
       align-items: center;
       transition: background 0.2s;
+      cursor: pointer; /* 🆕 Курсор-указатель */
     }
-
-    /* 🟢 Обычный день — оставляем как есть */
 
     /* ✅ Прочитанный день */
     .day.completed {
       background: rgba(0, 0, 0, 0.3);
     }
 
-    /* 🔴 Просроченный день (не прочитан, но уже в прошлом) */
+    /* 🔴 Просроченный день */
     .day.overdue {
-      background: rgba(255, 80, 80, 0.2); /* 🎨 Мягкий красный оттенок */
-      border-left: 4px solid #ff5050; /* 🚨 Акцент слева для лучшей заметности */
+      background: rgba(255, 80, 80, 0.2);
+      border-left: 4px solid #ff5050;
     }
 
     .day-text {
@@ -428,7 +427,7 @@
 
       let currentMonthYear = '';
       const today = new Date();
-      today.setHours(0, 0, 0, 0); // Обнуляем время для точного сравнения
+      today.setHours(0, 0, 0, 0);
 
       plan.forEach((item, index) => {
         const dayOffset = index + 1 - startDay;
@@ -449,7 +448,6 @@
         const dayEl = document.createElement('div');
         dayEl.className = 'day';
 
-        // 🆕 Определяем, просрочен ли день
         const isCompleted = state[index];
         const isOverdue = dayDate < today && !isCompleted;
 
@@ -467,6 +465,25 @@
         checkEl.type = 'checkbox';
         checkEl.className = 'check';
         checkEl.checked = isCompleted;
+
+        // 🆕 Обработчик клика по карточке
+        dayEl.addEventListener('click', (e) => {
+          // Если клик был по чекбоксу — не дублируем действие
+          if (e.target === checkEl) return;
+
+          checkEl.checked = !checkEl.checked;
+          state[index] = checkEl.checked;
+
+          dayEl.className = 'day';
+          if (state[index]) {
+            dayEl.classList.add('completed');
+          } else if (dayDate < today) {
+            dayEl.classList.add('overdue');
+          }
+
+          saveState();
+        });
+
         checkEl.addEventListener('change', () => {
           state[index] = checkEl.checked;
           dayEl.className = 'day';
@@ -495,6 +512,16 @@
         menuEl.style.display = 'none';
       }
     });
+
+    function showContinueModal() {
+      menuEl.style.display = 'none';
+      dayInput.value = '';
+      continueModal.classList.add('active');
+    }
+
+    function hideContinueModal() {
+      continueModal.classList.remove('active');
+    }
 
     // 🆕 Исправлено: index < day - 1 → день "day" остаётся неотмеченным
     function continueFromDay() {
