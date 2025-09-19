@@ -1,7 +1,7 @@
 {
-  "name": "Моё Первое PWA",
-  "short_name": "Привет",
-  "description": "Моя первая прогрессивная веб-апп",
+  "name": "Библия 111 дней",
+  "short_name": "Библия 111 дней",
+  "description": "План чтения Библии на 111 дней",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
