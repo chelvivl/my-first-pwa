@@ -29,17 +29,16 @@
       overscroll-behavior-y: none;
     }
 
-    /* 🆕 Убрали position: relative и padding-top у h1 */
     h1 {
       text-align: center;
-      margin: 40px 0 20px; /* Увеличили отступ сверху */
+      margin: 40px 0 20px;
       font-size: 1.8rem;
     }
 
-    /* 🆕 Кнопка меню — теперь строго вверху, не касается заголовка */
+    /* 🆕 Кнопка меню — поднимаем ВЫШЕ safe-area */
     .menu-button {
       position: absolute;
-      top: env(safe-area-inset-top); /* Прилипает к верху safe-area */
+      top: calc(env(safe-area-inset-top) - 10px); /* 🎯 Поднимаем на 10px выше */
       right: 15px;
       background: rgba(255,255,255,0.2);
       border: none;
@@ -53,8 +52,6 @@
       justify-content: center;
       z-index: 10;
       transition: background 0.2s;
-      /* 🆕 Добавим отступ сверху */
-      margin-top: 10px;
     }
     .menu-button:hover {
       background: rgba(255,255,255,0.3);
@@ -89,10 +86,10 @@
       font-weight: bold;
     }
 
-    /* 🆕 Меню — тоже опускаем ниже */
+    /* 🆕 Меню — тоже поднимаем выше */
     .menu {
       position: absolute;
-      top: calc(env(safe-area-inset-top) + 60px); /* Ниже кнопки */
+      top: calc(env(safe-area-inset-top) + 50px); /* Подняли выше */
       right: 15px;
       background: rgba(255,255,255,0.95);
       color: #2c3e50;
@@ -221,7 +218,7 @@
   </style>
 </head>
 <body>
-  <!-- 🆕 Кнопка меню — теперь строго вверху -->
+  <!-- 🆕 Кнопка меню — теперь выше safe-area -->
   <button class="menu-button" onclick="toggleMenu()">⋯</button>
 
   <h1>📖 Библия за 111 дней</h1>
