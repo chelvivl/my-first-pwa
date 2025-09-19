@@ -11,15 +11,18 @@
   <meta name="theme-color" content="#667eea">
 
   <style>
+    /* 🎯 Фон на <html> — чтобы Safari не показывал белый фон при отскоке */
     html {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      background-attachment: fixed;
+      background-size: cover;
+      min-height: 100%;
       height: 100%;
     }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      background-attachment: fixed;
-      background-size: cover;
+      background: transparent; /* Фон теперь на html */
       color: white;
       padding: 20px;
       margin: 0;
