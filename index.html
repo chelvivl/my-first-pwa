@@ -485,7 +485,7 @@
       localStorage.setItem(START_DAY_KEY, startDay);
 
       // Отмечаем все дни до выбранного (включительно)
-      state = plan.map((_, index) => index < day);
+      state = plan.map((_, index) => index < day - 1);
 
       saveState();
       render();
