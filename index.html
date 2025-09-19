@@ -67,9 +67,17 @@
       transition: background 0.2s;
     }
 
-    /* 🆕 Прочитанные дни — тёмный фон + бледный текст */
+    /* 🟢 Обычный день — оставляем как есть */
+
+    /* ✅ Прочитанный день */
     .day.completed {
-      background: rgba(0, 0, 0, 0.3); /* 🎨 Тёмный полупрозрачный фон */
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    /* 🔴 Просроченный день (не прочитан, но уже в прошлом) */
+    .day.overdue {
+      background: rgba(255, 80, 80, 0.2); /* 🎨 Мягкий красный оттенок */
+      border-left: 4px solid #ff5050; /* 🚨 Акцент слева для лучшей заметности */
     }
 
     .day-text {
@@ -84,7 +92,7 @@
 
     .completed .day-text {
       text-decoration: line-through;
-      color: rgba(255, 255, 255, 0.6); /* 🎨 Бледный белый текст */
+      color: rgba(255, 255, 255, 0.6);
     }
 
     .stats {
@@ -419,12 +427,14 @@
       listEl.innerHTML = '';
 
       let currentMonthYear = '';
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Обнуляем время для точного сравнения
 
       plan.forEach((item, index) => {
-        const today = new Date();
         const dayOffset = index + 1 - startDay;
         const dayDate = new Date(today);
         dayDate.setDate(today.getDate() + dayOffset);
+        dayDate.setHours(0, 0, 0, 0);
         const dateStr = formatDate(dayDate);
         const monthYearStr = formatMonthYear(dayDate);
 
@@ -437,7 +447,17 @@
         }
 
         const dayEl = document.createElement('div');
-        dayEl.className = `day ${state[index] ? 'completed' : ''}`;
+        dayEl.className = 'day';
+
+        // 🆕 Определяем, просрочен ли день
+        const isCompleted = state[index];
+        const isOverdue = dayDate < today && !isCompleted;
+
+        if (isCompleted) {
+          dayEl.classList.add('completed');
+        } else if (isOverdue) {
+          dayEl.classList.add('overdue');
+        }
 
         const textEl = document.createElement('div');
         textEl.className = 'day-text';
@@ -446,10 +466,15 @@
         const checkEl = document.createElement('input');
         checkEl.type = 'checkbox';
         checkEl.className = 'check';
-        checkEl.checked = state[index];
+        checkEl.checked = isCompleted;
         checkEl.addEventListener('change', () => {
           state[index] = checkEl.checked;
-          dayEl.className = `day ${state[index] ? 'completed' : ''}`;
+          dayEl.className = 'day';
+          if (state[index]) {
+            dayEl.classList.add('completed');
+          } else if (dayDate < today) {
+            dayEl.classList.add('overdue');
+          }
           saveState();
         });
 
