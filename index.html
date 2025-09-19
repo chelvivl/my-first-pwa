@@ -2,7 +2,6 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <!-- 🆕 viewport-fit=cover + safe-area -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Библия за 111 дней</title>
   <link rel="manifest" href="manifest.json">
@@ -12,7 +11,6 @@
   <meta name="theme-color" content="#667eea">
 
   <style>
-    /* 🎯 Фон на <html> */
     html {
       background: linear-gradient(135deg, #667eea, #764ba2);
       background-attachment: fixed;
@@ -24,7 +22,6 @@
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
       background: transparent;
       color: white;
-      /* 🆕 Добавляем padding-top с учётом safe-area */
       padding: env(safe-area-inset-top) 20px 20px 20px;
       margin: 0;
       position: relative;
@@ -32,18 +29,17 @@
       overscroll-behavior-y: none;
     }
 
+    /* 🆕 Убрали position: relative и padding-top у h1 */
     h1 {
       text-align: center;
-      margin: 30px 0 10px;
+      margin: 40px 0 20px; /* Увеличили отступ сверху */
       font-size: 1.8rem;
-      position: relative;
     }
 
-    /* 🆕 Кнопка меню — опускаем ниже */
+    /* 🆕 Кнопка меню — теперь строго вверху, не касается заголовка */
     .menu-button {
       position: absolute;
-      /* 🆕 top: calc(env(safe-area-inset-top) + 15px) */
-      top: calc(env(safe-area-inset-top) + 15px);
+      top: env(safe-area-inset-top); /* Прилипает к верху safe-area */
       right: 15px;
       background: rgba(255,255,255,0.2);
       border: none;
@@ -57,6 +53,8 @@
       justify-content: center;
       z-index: 10;
       transition: background 0.2s;
+      /* 🆕 Добавим отступ сверху */
+      margin-top: 10px;
     }
     .menu-button:hover {
       background: rgba(255,255,255,0.3);
@@ -91,11 +89,10 @@
       font-weight: bold;
     }
 
-    /* 🆕 Меню */
+    /* 🆕 Меню — тоже опускаем ниже */
     .menu {
       position: absolute;
-      /* 🆕 top: calc(env(safe-area-inset-top) + 70px) */
-      top: calc(env(safe-area-inset-top) + 70px);
+      top: calc(env(safe-area-inset-top) + 60px); /* Ниже кнопки */
       right: 15px;
       background: rgba(255,255,255,0.95);
       color: #2c3e50;
@@ -224,8 +221,10 @@
   </style>
 </head>
 <body>
-  <h1>📖 Библия за 111 дней</h1>
+  <!-- 🆕 Кнопка меню — теперь строго вверху -->
   <button class="menu-button" onclick="toggleMenu()">⋯</button>
+
+  <h1>📖 Библия за 111 дней</h1>
 
   <div class="menu" id="menu">
     <div class="menu-item" onclick="showContinueModal()">
