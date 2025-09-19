@@ -2,7 +2,8 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <!-- 🆕 Добавлено viewport-fit=cover -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Библия за 111 дней</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -11,23 +12,25 @@
   <meta name="theme-color" content="#667eea">
 
   <style>
-    /* 🎯 Фон на <html> — чтобы Safari не показывал белый фон при отскоке */
+    /* 🎯 Фон на <html> + viewport-fit=cover + svh */
     html {
       background: linear-gradient(135deg, #667eea, #764ba2);
       background-attachment: fixed;
       background-size: cover;
-      min-height: 100%;
       height: 100%;
     }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      background: transparent; /* Фон теперь на html */
+      background: transparent;
       color: white;
       padding: 20px;
       margin: 0;
       position: relative;
-      min-height: 100vh;
+      /* 🆕 Используем svh — small viewport height */
+      min-height: 100svh;
+      /* 🆕 Запрещаем rubber-band только по вертикали (если нужно) */
+      overscroll-behavior-y: none;
     }
 
     h1 {
@@ -370,7 +373,6 @@
       "Откровение 3-12",
       "Откровение 13-22"
     ];
-
     const listEl = document.getElementById('list');
     const statsEl = document.getElementById('stats');
     const menuEl = document.getElementById('menu');
