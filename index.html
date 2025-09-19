@@ -22,17 +22,39 @@
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
       background: transparent;
       color: white;
-      padding: env(safe-area-inset-top) 20px 20px 20px;
+      padding: 0 20px 20px 20px; /* 🆕 убран верхний паддинг — он теперь в header */
       margin: 0;
       position: relative;
       min-height: 100svh;
       overscroll-behavior-y: none;
     }
 
+    /* 🆕 Обёртка для фиксированного хедера */
+    .header {
+      position: fixed;
+      top: env(safe-area-inset-top);
+      left: 0;
+      right: 0;
+      padding: 10px 20px;
+      background: rgba(0,0,0,0.1);
+      backdrop-filter: blur(5px);
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
     h1 {
       text-align: center;
-      margin: 40px 0 20px;
+      margin: 10px 0 5px;
       font-size: 1.8rem;
+    }
+
+    .stats {
+      text-align: center;
+      margin: 5px 0 15px;
+      font-size: 1.2rem;
+      font-weight: bold;
     }
 
     .menu-button {
@@ -56,6 +78,11 @@
       background: rgba(255,255,255,0.3);
     }
 
+    /* 🆕 Отступ сверху для списка, чтобы не наезжал на фиксированный хедер */
+    #list {
+      margin-top: 180px; /* 📌 Подбирается под высоту хедера + немного отступа */
+    }
+
     .day {
       background: rgba(255,255,255,0.1);
       padding: 15px;
@@ -65,15 +92,13 @@
       justify-content: space-between;
       align-items: center;
       transition: background 0.2s;
-      cursor: pointer; /* 🆕 Курсор-указатель */
+      cursor: pointer;
     }
 
-    /* ✅ Прочитанный день */
     .day.completed {
       background: rgba(0, 0, 0, 0.3);
     }
 
-    /* 🔴 Просроченный день */
     .day.overdue {
       background: rgba(255, 80, 80, 0.2);
       border-left: 4px solid #ff5050;
@@ -92,13 +117,6 @@
     .completed .day-text {
       text-decoration: line-through;
       color: rgba(255, 255, 255, 0.6);
-    }
-
-    .stats {
-      text-align: center;
-      margin: 20px 0;
-      font-size: 1.2rem;
-      font-weight: bold;
     }
 
     .month-header {
@@ -200,13 +218,13 @@
       margin-top: 20px;
     }
     .modal-btn {
-      padding: 14px 20px;        /* 🆕 Увеличенный padding */
+      padding: 14px 20px;
       border: none;
       border-radius: 8px;
       font-weight: bold;
       cursor: pointer;
       flex: 1;
-      font-size: 1.2rem;         /* 🆕 Увеличенный шрифт кнопок */
+      font-size: 1.2rem;
     }
     .modal-btn.cancel {
       background: #e0e0e0;
@@ -242,9 +260,12 @@
   </style>
 </head>
 <body>
-  <button class="menu-button" onclick="toggleMenu()">⋯</button>
-
-  <h1>📖 Библия за 111 дней</h1>
+  <!-- 🆕 Фиксированный хедер -->
+  <div class="header">
+    <button class="menu-button" onclick="toggleMenu()">⋯</button>
+    <h1>📖 Библия за 111 дней</h1>
+    <div class="stats" id="stats">Прогресс: 0 из 111</div>
+  </div>
 
   <div class="menu" id="menu">
     <div class="menu-item" onclick="showContinueModal()">
@@ -254,8 +275,6 @@
       🗑️ Сбросить всё
     </div>
   </div>
-
-  <div class="stats" id="stats">Прогресс: 0 из 111</div>
 
   <div id="list">
     <!-- Список дней будет сгенерирован здесь -->
@@ -448,6 +467,7 @@
 
         const dayEl = document.createElement('div');
         dayEl.className = 'day';
+        dayEl.id = `day-${index + 1}`; // 🆕 Уникальный ID для плавной прокрутки
 
         const isCompleted = state[index];
         const isOverdue = dayDate < today && !isCompleted;
@@ -467,11 +487,8 @@
         checkEl.className = 'check';
         checkEl.checked = isCompleted;
 
-        // 🆕 Обработчик клика по карточке
         dayEl.addEventListener('click', (e) => {
-          // Если клик был по чекбоксу — не дублируем действие
           if (e.target === checkEl) return;
-
           checkEl.checked = !checkEl.checked;
           state[index] = checkEl.checked;
 
@@ -524,7 +541,6 @@
       continueModal.classList.remove('active');
     }
 
-    // 🆕 Исправлено: index < day - 1 → день "day" остаётся неотмеченным
     function continueFromDay() {
       const day = parseInt(dayInput.value);
       if (isNaN(day) || day < 1 || day > plan.length) {
@@ -534,14 +550,20 @@
 
       startDay = day;
       localStorage.setItem(START_DAY_KEY, startDay);
-
-      // ✅ Отмечаем дни строго ДО выбранного дня
       state = plan.map((_, index) => index < day - 1);
 
       saveState();
       render();
       hideContinueModal();
       showNotification(`✅ День ${day} установлен как сегодня!`);
+
+      // 🎯 Плавная прокрутка к выбранному дню
+      setTimeout(() => {
+        const targetDayEl = document.getElementById(`day-${day}`);
+        if (targetDayEl) {
+          targetDayEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 300); // Небольшая задержка, чтобы рендер завершился
     }
 
     function resetProgress() {
