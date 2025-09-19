@@ -237,6 +237,36 @@
       opacity: 1;
       transform: translate(-50%, -50%) scale(1);
     }
+
+    /* 🆕 Кнопка "Текущий день" */
+    #current-day-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255,255,255,0.9);
+      color: #667eea;
+      border: none;
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      cursor: pointer;
+      z-index: 99;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+    #current-day-btn.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
   </style>
 </head>
 <body>
@@ -272,6 +302,11 @@
   </div>
 
   <div class="toast-notification" id="toast-notification">Сообщение</div>
+
+  <!-- 🆕 Кнопка "Текущий день" -->
+  <button id="current-day-btn" class="show" style="opacity:0;visibility:hidden;pointer-events:none;" onclick="scrollToCurrentDay()">
+    ⬇️
+  </button>
 
   <script>
 
@@ -395,6 +430,7 @@
     const toastEl = document.getElementById('toast-notification');
     const continueModal = document.getElementById('continue-modal');
     const dayInput = document.getElementById('day-input');
+    const currentDayBtn = document.getElementById('current-day-btn');
     const STORAGE_KEY = 'bible-plan-v1';
     const START_DAY_KEY = 'bible-plan-start-day';
 
@@ -446,7 +482,7 @@
 
         const dayEl = document.createElement('div');
         dayEl.className = 'day';
-        dayEl.id = `day-${index + 1}`; // 🆕 Для плавной прокрутки
+        dayEl.id = `day-${index + 1}`;
 
         const isCompleted = state[index];
         const isOverdue = dayDate < today && !isCompleted;
@@ -479,6 +515,7 @@
           }
 
           saveState();
+          updateCurrentDayButton(); // Обновить кнопку после изменения
         });
 
         checkEl.addEventListener('change', () => {
@@ -490,6 +527,7 @@
             dayEl.classList.add('overdue');
           }
           saveState();
+          updateCurrentDayButton(); // Обновить кнопку после изменения
         });
 
         dayEl.appendChild(textEl);
@@ -498,6 +536,7 @@
       });
 
       updateStats();
+      setTimeout(updateCurrentDayButton, 100); // Задержка для корректного расчета после рендера
     }
 
     function toggleMenu() {
@@ -536,13 +575,13 @@
       hideContinueModal();
       showNotification(`✅ День ${day} установлен как сегодня!`);
 
-      // 🎯 Плавная прокрутка к выбранному дню
       setTimeout(() => {
         const targetDayEl = document.getElementById(`day-${day}`);
         if (targetDayEl) {
           targetDayEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-      }, 300); // Задержка, чтобы рендер завершился
+        updateCurrentDayButton();
+      }, 300);
     }
 
     function resetProgress() {
@@ -562,6 +601,59 @@
         toastEl.classList.remove('show');
       }, 2500);
     }
+
+    // 🆕 Функция: определить, виден ли элемент в окне просмотра
+    function isInViewport(element) {
+      const rect = element.getBoundingClientRect();
+      return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+      );
+    }
+
+    // 🆕 Функция: обновить состояние кнопки "Текущий день"
+    function updateCurrentDayButton() {
+      const todayIndex = startDay - 1; // индекс текущего дня (0-based)
+      const currentDayEl = document.getElementById(`day-${startDay}`);
+
+      if (!currentDayEl) {
+        currentDayBtn.classList.remove('show');
+        return;
+      }
+
+      const rect = currentDayEl.getBoundingClientRect();
+      const isVisible = isInViewport(currentDayEl);
+
+      if (isVisible) {
+        currentDayBtn.classList.remove('show');
+        return;
+      }
+
+      // Определяем направление стрелки
+      if (rect.top < 0) {
+        // Элемент выше — стрелка вверх
+        currentDayBtn.innerHTML = '⬆️';
+      } else {
+        // Элемент ниже — стрелка вниз
+        currentDayBtn.innerHTML = '⬇️';
+      }
+
+      currentDayBtn.classList.add('show');
+    }
+
+    // 🆕 Функция: прокрутить к текущему дню
+    function scrollToCurrentDay() {
+      const currentDayEl = document.getElementById(`day-${startDay}`);
+      if (currentDayEl) {
+        currentDayEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(updateCurrentDayButton, 500); // Обновить кнопку после скролла
+      }
+    }
+
+    // 🆕 Слушатель прокрутки для обновления кнопки
+    window.addEventListener('scroll', updateCurrentDayButton, { passive: true });
 
     render();
   </script>
