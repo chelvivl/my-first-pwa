@@ -64,7 +64,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      transition: background 0.2s;
     }
+
+    /* 🆕 Прочитанные дни — тёмный фон + бледный текст */
+    .day.completed {
+      background: rgba(0, 0, 0, 0.3); /* 🎨 Тёмный полупрозрачный фон */
+    }
+
     .day-text {
       flex: 1;
       font-size: 1.1rem;
@@ -74,10 +81,12 @@
       height: 24px;
       cursor: pointer;
     }
+
     .completed .day-text {
       text-decoration: line-through;
-      opacity: 0.7;
+      color: rgba(255, 255, 255, 0.6); /* 🎨 Бледный белый текст */
     }
+
     .stats {
       text-align: center;
       margin: 20px 0;
@@ -381,10 +390,10 @@
     const continueModal = document.getElementById('continue-modal');
     const dayInput = document.getElementById('day-input');
     const STORAGE_KEY = 'bible-plan-v1';
-    const START_DAY_KEY = 'bible-plan-start-day'; // 🆕 Храним не дату, а номер дня, который = сегодня
+    const START_DAY_KEY = 'bible-plan-start-day';
 
     let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || plan.map(() => false);
-    let startDay = parseInt(localStorage.getItem(START_DAY_KEY)) || 1; // 🆕 По умолчанию: день 1 = сегодня
+    let startDay = parseInt(localStorage.getItem(START_DAY_KEY)) || 1;
 
     function saveState() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -412,9 +421,8 @@
       let currentMonthYear = '';
 
       plan.forEach((item, index) => {
-        // 🆕 Вычисляем дату относительно "startDay"
         const today = new Date();
-        const dayOffset = index + 1 - startDay; // если index=32, startDay=33 → offset = -1 (вчера)
+        const dayOffset = index + 1 - startDay;
         const dayDate = new Date(today);
         dayDate.setDate(today.getDate() + dayOffset);
         const dateStr = formatDate(dayDate);
@@ -463,16 +471,7 @@
       }
     });
 
-    function showContinueModal() {
-      menuEl.style.display = 'none';
-      dayInput.value = '';
-      continueModal.classList.add('active');
-    }
-
-    function hideContinueModal() {
-      continueModal.classList.remove('active');
-    }
-
+    // 🆕 Исправлено: index < day - 1 → день "day" остаётся неотмеченным
     function continueFromDay() {
       const day = parseInt(dayInput.value);
       if (isNaN(day) || day < 1 || day > plan.length) {
@@ -480,11 +479,10 @@
         return;
       }
 
-      // 🆕 Устанавливаем: выбранный день = сегодня
       startDay = day;
       localStorage.setItem(START_DAY_KEY, startDay);
 
-      // Отмечаем все дни до выбранного (включительно)
+      // ✅ Отмечаем дни строго ДО выбранного дня
       state = plan.map((_, index) => index < day - 1);
 
       saveState();
