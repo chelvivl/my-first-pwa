@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <!-- 🆕 Добавлено viewport-fit=cover -->
+  <!-- 🆕 viewport-fit=cover + safe-area -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Библия за 111 дней</title>
   <link rel="manifest" href="manifest.json">
@@ -12,7 +12,7 @@
   <meta name="theme-color" content="#667eea">
 
   <style>
-    /* 🎯 Фон на <html> + viewport-fit=cover + svh */
+    /* 🎯 Фон на <html> */
     html {
       background: linear-gradient(135deg, #667eea, #764ba2);
       background-attachment: fixed;
@@ -24,12 +24,11 @@
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
       background: transparent;
       color: white;
-      padding: 20px;
+      /* 🆕 Добавляем padding-top с учётом safe-area */
+      padding: env(safe-area-inset-top) 20px 20px 20px;
       margin: 0;
       position: relative;
-      /* 🆕 Используем svh — small viewport height */
       min-height: 100svh;
-      /* 🆕 Запрещаем rubber-band только по вертикали (если нужно) */
       overscroll-behavior-y: none;
     }
 
@@ -38,13 +37,13 @@
       margin: 30px 0 10px;
       font-size: 1.8rem;
       position: relative;
-      padding-top: 10px;
     }
 
-    /* 🆕 Кнопка меню */
+    /* 🆕 Кнопка меню — опускаем ниже */
     .menu-button {
       position: absolute;
-      top: 15px;
+      /* 🆕 top: calc(env(safe-area-inset-top) + 15px) */
+      top: calc(env(safe-area-inset-top) + 15px);
       right: 15px;
       background: rgba(255,255,255,0.2);
       border: none;
@@ -95,7 +94,8 @@
     /* 🆕 Меню */
     .menu {
       position: absolute;
-      top: 70px;
+      /* 🆕 top: calc(env(safe-area-inset-top) + 70px) */
+      top: calc(env(safe-area-inset-top) + 70px);
       right: 15px;
       background: rgba(255,255,255,0.95);
       color: #2c3e50;
@@ -373,6 +373,7 @@
       "Откровение 3-12",
       "Откровение 13-22"
     ];
+
     const listEl = document.getElementById('list');
     const statsEl = document.getElementById('stats');
     const menuEl = document.getElementById('menu');
