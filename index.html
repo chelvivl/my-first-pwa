@@ -11,15 +11,15 @@
   <meta name="theme-color" content="#667eea">
 
   <style>
-    /* 🆕 Фон градиента на html — чтобы при отскоке не было белого */
     html {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      min-height: 100%;
+      height: 100%;
     }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      background: transparent; /* Убираем фон с body — он теперь на html */
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      background-attachment: fixed;
+      background-size: cover;
       color: white;
       padding: 20px;
       margin: 0;
